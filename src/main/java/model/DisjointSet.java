@@ -1,19 +1,35 @@
-package graph;
+package model;
 
 import misc.Printer;
+
 import java.util.ArrayList;
 import java.util.List;
 
+public abstract class DisjointSet<V extends Vertex, P extends Path<V>> {
 
-public record DisjointSet(String id, int count, List<Path> paths) {
+    private final String id;
+    private final int count;
+    private final List<P> paths;
 
-    public DisjointSet(String id, int count, List<Path> paths) {
+    public DisjointSet(String id, int count, List<P> paths) {
         this.id = id;
         this.count = count;
         this.paths = new ArrayList<>(paths);
     }
 
-    public void add(Path path) {
+    public String getId() {
+        return id;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public List<P> getPaths() {
+        return paths;
+    }
+
+    public void add(P path) {
         this.paths.add(path);
     }
 
@@ -25,8 +41,8 @@ public record DisjointSet(String id, int count, List<Path> paths) {
         return this.paths.size() == count;
     }
 
-    public boolean isPathDisjointWithSet(Path disjointPath) {
-        for (Path path : paths) {
+    public boolean isPathDisjointWithSet(P disjointPath) {
+        for (P path : paths) {
             if (!disjointPath.isDisjoint(path)) {
                 return false;
             }
@@ -37,11 +53,11 @@ public record DisjointSet(String id, int count, List<Path> paths) {
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder();
-        result.append(Printer.formatRed(String.format("%s ", id)));
+        result.append(Printer.formatRed(String.format("%s ", this.id)));
         result.append("(");
         int p = 1;
-        for (Path path : this.paths) {
-            result.append(String.format("%s", path.id()));
+        for (P path : this.paths) {
+            result.append(String.format("%s", path.getId()));
             if (p < this.paths.size()) {
                 result.append(", ");
             }
