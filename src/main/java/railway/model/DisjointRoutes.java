@@ -1,6 +1,6 @@
-package railway;
+package railway.model;
 
-import model.DisjointSet;
+import graph.model.DisjointSet;
 
 import java.util.List;
 

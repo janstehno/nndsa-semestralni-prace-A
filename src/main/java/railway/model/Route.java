@@ -1,6 +1,6 @@
-package railway;
+package railway.model;
 
-import model.Path;
+import graph.model.Path;
 
 import java.util.List;
 

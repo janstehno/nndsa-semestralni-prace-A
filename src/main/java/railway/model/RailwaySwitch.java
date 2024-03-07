@@ -1,7 +1,7 @@
-package railway;
+package railway.model;
 
-import model.Vertex;
-import model.VertexType;
+import graph.model.Vertex;
+import graph.model.VertexType;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package model;
+package graph.model;
 
 public enum VertexType {
 
