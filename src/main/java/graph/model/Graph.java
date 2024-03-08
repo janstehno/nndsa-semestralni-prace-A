@@ -21,13 +21,26 @@ public abstract class Graph<V extends Vertex> {
         return this.vertices.stream().filter(Vertex::isEnd).collect(Collectors.toSet());
     }
 
-    public List<V> getNeighborsOf(V vertex) {
+    public List<V> getNeighborsAt(V vertex) {
         return edges.get(vertex);
     }
 
-    public V getNextAtCrossroad(V crossroad, V before) {
-        int nextId = getNeighborsOf(crossroad).indexOf(before) + 1;
-        return getNeighborsOf(crossroad).get(nextId);
+    public List<V> getNeighborsAtCrossroad(V crossroad, V previous) {
+        List<V> neighbors = getNeighborsAt(crossroad);
+        List<V> next = new ArrayList<>();
+        boolean previousFound = false;
+
+        for (V neighbor : neighbors) {
+            if (previousFound) {
+                next.add(neighbor);
+                previousFound = false;
+            }
+            if (neighbor.equals(previous)) {
+                previousFound = true;
+            }
+        }
+
+        return next;
     }
 
     public V getVertexById(Integer id) {

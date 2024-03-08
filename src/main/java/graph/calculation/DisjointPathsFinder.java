@@ -4,43 +4,45 @@ import graph.model.DisjointSet;
 import graph.model.Path;
 import graph.model.Vertex;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public abstract class DisjointPathsFinder<V extends Vertex, P extends Path<V>, D extends DisjointSet<V, P>> {
 
-    private final List<P> paths;
+    private final Set<P> paths;
 
-    public DisjointPathsFinder(List<P> paths) {
+    public DisjointPathsFinder(Set<P> paths) {
         this.paths = paths;
     }
 
-    protected abstract D createDisjointSet(String setId, int count, List<P> paths);
+    protected abstract D createDisjointSet(String setId, int count, Set<P> paths);
 
-    public List<D> findAllDisjointSets(int count) {
-        List<D> foundSets = new ArrayList<>();
-        D disjointSet = createDisjointSet("D1", count, new ArrayList<>());
+    public Set<D> findAllDisjointSets(int count) {
+        Set<D> foundSets = new HashSet<>();
+        D disjointSet = createDisjointSet("D1", count, new HashSet<>());
         findDisjointSet(this.paths, disjointSet, foundSets);
         return foundSets;
     }
 
-    private void findDisjointSet(List<P> allPaths, DisjointSet<V, P> disjointSet, List<D> foundSets) {
+    private void findDisjointSet(Set<P> compareToPaths, DisjointSet<V, P> disjointSet, Set<D> foundSets) {
         if (disjointSet.isSetFound()) {
             String setId = String.format("D%d", foundSets.size() + 1);
-            foundSets.add(createDisjointSet(setId, disjointSet.getCount(), new ArrayList<>(disjointSet.getPaths())));
+            foundSets.add(createDisjointSet(setId, disjointSet.getCount(), new HashSet<>(disjointSet.getPaths())));
             return;
         }
 
-        for (P path : allPaths) {
+        // contains paths that the *current* path was not compared with yet
+        Set<P> remainingPaths = new HashSet<>(compareToPaths);
+
+        for (P path : compareToPaths) {
+            remainingPaths.remove(path);
             if (!disjointSet.getPaths().isEmpty() && !disjointSet.isPathDisjointWithSet(path)) {
                 continue;
             }
-            disjointSet.add(path);
-            // sublist contains paths that the *current* path was not compared with yet
-            List<P> remainingPaths = new ArrayList<>(allPaths.subList(allPaths.indexOf(path) + 1, allPaths.size()));
+            disjointSet.addPath(path);
             // recursive call
             findDisjointSet(remainingPaths, disjointSet, foundSets);
-            disjointSet.remove(disjointSet.getPaths().size() - 1);
+            disjointSet.removePath(path);
         }
     }
 }

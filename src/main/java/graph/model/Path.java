@@ -5,7 +5,7 @@ import misc.Printer;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Path<V extends Vertex> {
+public abstract class Path<V extends Vertex> implements Comparable<Path<V>>{
 
     private final String id;
     private final List<V> nodes;
@@ -31,8 +31,12 @@ public abstract class Path<V extends Vertex> {
         this.nodes.add(node);
     }
 
-    public void removeNode(V node) {
-        this.nodes.remove(node);
+    public void removeLast() {
+        this.nodes.remove(this.nodes.size() - 1);
+    }
+
+    public boolean containsNode(V node) {
+        return this.nodes.contains(node);
     }
 
     public boolean isDisjoint(Path<V> path) {

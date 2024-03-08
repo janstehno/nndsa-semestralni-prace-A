@@ -2,19 +2,18 @@ package graph.model;
 
 import misc.Printer;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-public abstract class DisjointSet<V extends Vertex, P extends Path<V>> {
+public abstract class DisjointSet<V extends Vertex, P extends Path<V>> implements Comparable<DisjointSet<V, P>> {
 
     private final String id;
     private final int count;
-    private final List<P> paths;
+    private final Set<P> paths;
 
-    public DisjointSet(String id, int count, List<P> paths) {
+    public DisjointSet(String id, int count, Set<P> paths) {
         this.id = id;
         this.count = count;
-        this.paths = new ArrayList<>(paths);
+        this.paths = new HashSet<>(paths);
     }
 
     public String getId() {
@@ -25,16 +24,16 @@ public abstract class DisjointSet<V extends Vertex, P extends Path<V>> {
         return count;
     }
 
-    public List<P> getPaths() {
+    public Set<P> getPaths() {
         return paths;
     }
 
-    public void add(P path) {
+    public void addPath(P path) {
         this.paths.add(path);
     }
 
-    public void remove(int i) {
-        this.paths.remove(i);
+    public void removePath(P path) {
+        this.paths.remove(path);
     }
 
     public boolean isSetFound() {

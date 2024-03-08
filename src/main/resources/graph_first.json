@@ -6,7 +6,6 @@
   },
   {
     "ID": 12,
-    "TYPE": "V",
     "NEIGHBORS": [14]
   },
   {
@@ -16,7 +15,6 @@
   },
   {
     "ID": 18,
-    "TYPE": "V",
     "NEIGHBORS": [19, 27]
   },
   {
@@ -31,27 +29,22 @@
   },
   {
     "ID": 13,
-    "TYPE": "V",
     "NEIGHBORS": [15]
   },
   {
     "ID": 15,
-    "TYPE": "V",
     "NEIGHBORS": [16]
   },
   {
     "ID": 16,
-    "TYPE": "V",
     "NEIGHBORS": [17, 19]
   },
   {
     "ID": 19,
-    "TYPE": "V",
     "NEIGHBORS": [28]
   },
   {
     "ID": 14,
-    "TYPE": "V",
     "NEIGHBORS": [30]
   },
   {
@@ -61,7 +54,6 @@
   },
   {
     "ID": 17,
-    "TYPE": "V",
     "NEIGHBORS": [29]
   },
   {
@@ -71,12 +63,10 @@
   },
   {
     "ID": 27,
-    "TYPE": "E",
-    "NEIGHBORS": []
+    "TYPE": "E"
   },
   {
     "ID": 28,
-    "TYPE": "E",
-    "NEIGHBORS": []
+    "TYPE": "E"
   }
 ]

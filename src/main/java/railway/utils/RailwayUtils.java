@@ -47,20 +47,22 @@ public class RailwayUtils {
         }
     }
 
-    private void printRoutes(List<Route> routes) {
+    private void printRoutes(Set<Route> routes) {
         System.out.println(Printer.formatGreen(String.format("%d routes", routes.size())));
         if (this.style == 1 || this.style == 3) {
-            for (Route route : routes) {
+            Set<Route> sorted = new TreeSet<>(routes);
+            for (Route route : sorted) {
                 System.out.println(route);
             }
         }
     }
 
-    private void printDisjointRoutes(List<DisjointRoutes> disjointRoutes) {
-        System.out.println(Printer.formatBlue(String.format("%d disjoint %ds", disjointRoutes.size(), disjointRoutes.get(0).getCount())));
+    private void printDisjointRoutes(Set<DisjointRoutes> disjointRoutes, int count) {
+        System.out.println(Printer.formatBlue(String.format("%d disjoint %ds", disjointRoutes.size(), count)));
         if (this.style == 2 || this.style == 3) {
             int s = 1;
-            for (DisjointRoutes routes : disjointRoutes) {
+            Set<DisjointRoutes> sorted = new TreeSet<>(disjointRoutes);
+            for (DisjointRoutes routes : sorted) {
                 System.out.print(routes);
                 if (s % 4 == 0 || s == disjointRoutes.size()) {
                     System.out.print("\n");
@@ -72,23 +74,23 @@ public class RailwayUtils {
         }
     }
 
-    private List<Route> findRoutes(Railway railway) {
+    private Set<Route> findRoutes(Railway railway) {
         RouteFinder routeFinder = new RouteFinder(railway);
-        List<Route> routes = routeFinder.findAllPaths();
+        Set<Route> routes = routeFinder.findAllPaths();
         printRoutes(routes);
         return routes;
     }
 
-    private void findDisjointRoutes(Railway railway, List<Route> routes) {
+    private void findDisjointRoutes(Railway railway, Set<Route> routes) {
         DisjointRoutesFinder disjointRoutesFinder = new DisjointRoutesFinder(routes);
         int numberOfDisjointSets = 0;
         int maxNumberOfDisjointRoutesInGroup = Math.min(railway.getStarts().size(), railway.getEnds().size());
 
         for (int i = 2; i <= maxNumberOfDisjointRoutesInGroup; i++) {
-            List<DisjointRoutes> disjointRoutes = disjointRoutesFinder.findAllDisjointSets(i);
+            Set<DisjointRoutes> disjointRoutes = disjointRoutesFinder.findAllDisjointSets(i);
             if (disjointRoutes.isEmpty()) break;
             numberOfDisjointSets += disjointRoutes.size();
-            printDisjointRoutes(disjointRoutes);
+            printDisjointRoutes(disjointRoutes, i);
         }
 
         System.out.println(Printer.formatGreen(String.format("%d disjoint groups", numberOfDisjointSets)));
