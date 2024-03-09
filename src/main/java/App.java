@@ -1,4 +1,4 @@
-import railway.utils.RailwayUtils;
+import example.railway.utils.RailwayUtils;
 
 public class App {
     public static void main(String[] args) {

@@ -17,13 +17,13 @@ public abstract class PathFinder<G extends Graph<V>, V extends Vertex, P extends
         this.graph = graph;
     }
 
-    protected abstract P createPath(String pathId, List<V> vertices);
+    protected abstract P createPath(Integer id, List<V> vertices);
 
     public Set<P> findAllPaths() {
         Set<P> foundPaths = new HashSet<>();
 
-        for (V start : graph.getStarts()) {
-            P path = createPath("P1", new ArrayList<>());
+        for (V start : this.graph.getStarts()) {
+            P path = createPath(1, new ArrayList<>());
             depthFirstSearch(start, path, foundPaths);
         }
 
@@ -33,11 +33,10 @@ public abstract class PathFinder<G extends Graph<V>, V extends Vertex, P extends
     private void depthFirstSearch(V current, P path, Set<P> foundPaths) {
         path.addNode(current);
         if (current.isEnd() && path.getNodes().size() > 1) {
-            String pathId = String.format("P%d", foundPaths.size() + 1);
-            foundPaths.add(createPath(pathId, new ArrayList<>(path.getNodes())));
+            foundPaths.add(createPath(foundPaths.size() + 1, new ArrayList<>(path.getNodes())));
         }
 
-        for (V neighbor : graph.getNeighborsAt(current)) {
+        for (V neighbor : this.graph.getNeighborsAt(current)) {
             // circular paths
             if (path.containsNode(neighbor)) continue;
 
@@ -53,9 +52,9 @@ public abstract class PathFinder<G extends Graph<V>, V extends Vertex, P extends
     }
 
     private void crossroadSearch(V crossroad, V previous, P path, Set<P> foundPaths) {
-        List<V> nextNodes = graph.getNeighborsAtCrossroad(crossroad, previous);
+        List<V> nextNodes = this.graph.getNeighborsAtCrossroad(crossroad, previous);
         for (V next : nextNodes) {
-            // circular and not allowed paths
+            // circular paths
             if (path.containsNode(next) || next.equals(crossroad)) continue;
 
             // add crossroad node

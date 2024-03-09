@@ -1,6 +1,7 @@
 package graph.model;
 
 import com.google.gson.annotations.SerializedName;
+import misc.Printer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +45,6 @@ public abstract class Vertex {
 
     @Override
     public String toString() {
-        return String.format("%d(%s, %s)", this.id, this.type.toString(), this.neighbors);
+        return Printer.formatPurple(String.format("(%s)%s", this.getType(), this.getId())) + (this.getNeighbors().isEmpty() ? "" : " " + this.getNeighbors());
     }
 }

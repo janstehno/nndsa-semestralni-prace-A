@@ -13,6 +13,10 @@ public abstract class Graph<V extends Vertex> {
         createEdges();
     }
 
+    public Set<V> getVertices() {
+        return this.vertices;
+    }
+
     public Set<V> getStarts() {
         return this.vertices.stream().filter(Vertex::isStart).collect(Collectors.toSet());
     }
@@ -22,7 +26,7 @@ public abstract class Graph<V extends Vertex> {
     }
 
     public List<V> getNeighborsAt(V vertex) {
-        return edges.get(vertex);
+        return this.edges.get(vertex);
     }
 
     public List<V> getNeighborsAtCrossroad(V crossroad, V previous) {
@@ -48,13 +52,13 @@ public abstract class Graph<V extends Vertex> {
     }
 
     private void createEdges() {
-        for (V vertex : vertices) {
+        for (V vertex : this.vertices) {
             List<V> neighbors = new ArrayList<>();
             for (Integer neighborId : vertex.getNeighbors()) {
                 V neighbor = getVertexById(neighborId);
                 if (neighbor != null) neighbors.add(getVertexById(neighborId));
             }
-            edges.put(vertex, neighbors);
+            this.edges.put(vertex, neighbors);
         }
     }
 }

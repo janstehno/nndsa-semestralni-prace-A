@@ -4,8 +4,7 @@ import graph.model.DisjointSet;
 import graph.model.Path;
 import graph.model.Vertex;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public abstract class DisjointPathsFinder<V extends Vertex, P extends Path<V>, D extends DisjointSet<V, P>> {
 
@@ -15,19 +14,28 @@ public abstract class DisjointPathsFinder<V extends Vertex, P extends Path<V>, D
         this.paths = paths;
     }
 
-    protected abstract D createDisjointSet(String setId, int count, Set<P> paths);
+    protected abstract D createDisjointSet(Integer id, int count, Set<P> paths);
 
-    public Set<D> findAllDisjointSets(int count) {
+    public Map<Integer, Set<D>> findAllDisjointSets(int maxInDisjointSet) {
+        Map<Integer, Set<D>> allFoundSets = new HashMap<>();
+        for (int i = 2; i <= maxInDisjointSet; i++) {
+            Set<D> disjointRoutes = findDisjointSets(i);
+            if (disjointRoutes.isEmpty()) break;
+            allFoundSets.put(i, disjointRoutes);
+        }
+        return allFoundSets;
+    }
+
+    private Set<D> findDisjointSets(int count) {
         Set<D> foundSets = new HashSet<>();
-        D disjointSet = createDisjointSet("D1", count, new HashSet<>());
+        D disjointSet = createDisjointSet(1, count, new HashSet<>());
         findDisjointSet(this.paths, disjointSet, foundSets);
         return foundSets;
     }
 
     private void findDisjointSet(Set<P> compareToPaths, DisjointSet<V, P> disjointSet, Set<D> foundSets) {
         if (disjointSet.isSetFound()) {
-            String setId = String.format("D%d", foundSets.size() + 1);
-            foundSets.add(createDisjointSet(setId, disjointSet.getCount(), new HashSet<>(disjointSet.getPaths())));
+            foundSets.add(createDisjointSet(foundSets.size() + 1, disjointSet.getCount(), new HashSet<>(disjointSet.getPaths())));
             return;
         }
 

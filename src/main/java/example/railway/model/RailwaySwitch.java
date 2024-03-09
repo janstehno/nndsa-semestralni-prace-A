@@ -1,4 +1,4 @@
-package railway.model;
+package example.railway.model;
 
 import graph.model.Vertex;
 import graph.model.VertexType;

@@ -6,26 +6,26 @@ import java.util.*;
 
 public abstract class DisjointSet<V extends Vertex, P extends Path<V>> implements Comparable<DisjointSet<V, P>> {
 
-    private final String id;
+    private final Integer id;
     private final int count;
     private final Set<P> paths;
 
-    public DisjointSet(String id, int count, Set<P> paths) {
+    public DisjointSet(Integer id, int count, Set<P> paths) {
         this.id = id;
         this.count = count;
         this.paths = new HashSet<>(paths);
     }
 
-    public String getId() {
-        return id;
+    public Integer getId() {
+        return this.id;
     }
 
     public int getCount() {
-        return count;
+        return this.count;
     }
 
     public Set<P> getPaths() {
-        return paths;
+        return this.paths;
     }
 
     public void addPath(P path) {
@@ -37,11 +37,11 @@ public abstract class DisjointSet<V extends Vertex, P extends Path<V>> implement
     }
 
     public boolean isSetFound() {
-        return this.paths.size() == count;
+        return this.paths.size() == this.count;
     }
 
     public boolean isPathDisjointWithSet(P disjointPath) {
-        for (P path : paths) {
+        for (P path : this.paths) {
             if (!disjointPath.isDisjoint(path)) {
                 return false;
             }
@@ -52,12 +52,12 @@ public abstract class DisjointSet<V extends Vertex, P extends Path<V>> implement
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder();
-        result.append(Printer.formatRed(String.format("%s ", this.id)));
+        result.append(Printer.formatRed(String.format("D%s ", this.getId())));
         result.append("(");
         int p = 1;
-        for (P path : this.paths) {
-            result.append(String.format("%s", path.getId()));
-            if (p < this.paths.size()) {
+        for (P path : this.getPaths()) {
+            result.append(String.format("P%s", path.getId()));
+            if (p < this.getPaths().size()) {
                 result.append(", ");
             }
             p++;
