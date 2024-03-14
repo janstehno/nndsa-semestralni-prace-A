@@ -1,5 +1,6 @@
 package graph.model;
 
+import com.google.gson.annotations.SerializedName;
 import misc.Printer;
 
 import java.util.ArrayList;
@@ -7,8 +8,8 @@ import java.util.List;
 
 public abstract class Path<V extends Vertex> implements Comparable<Path<V>> {
 
-    private final Integer id;
-    private final List<V> nodes;
+    @SerializedName("ID") private final Integer id;
+    @SerializedName("NODES") private final List<V> nodes;
 
     public Path(Integer id, List<V> nodes) {
         this.id = id;
@@ -44,10 +45,10 @@ public abstract class Path<V extends Vertex> implements Comparable<Path<V>> {
         return true;
     }
 
-    @Override
-    public String toString() {
+    public String toString(boolean colored) {
         StringBuilder result = new StringBuilder();
-        result.append(Printer.formatYellow(String.format("P%s ", this.getId())));
+        String id = String.format("P%s ", this.getId());
+        result.append(colored ? Printer.formatYellow(id) : id);
         result.append("(");
         int p = 1;
         for (V node : this.getNodes()) {

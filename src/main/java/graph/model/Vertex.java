@@ -6,7 +6,7 @@ import misc.Printer;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Vertex {
+public abstract class Vertex implements Comparable<Vertex>{
     @SerializedName("ID") Integer id;
     @SerializedName("TYPE") VertexType type;
     @SerializedName("NEIGHBORS") List<Integer> neighbors;
@@ -43,8 +43,8 @@ public abstract class Vertex {
         return new ArrayList<>();
     }
 
-    @Override
-    public String toString() {
-        return Printer.formatPurple(String.format("(%s)%s", this.getType(), this.getId())) + (this.getNeighbors().isEmpty() ? "" : " " + this.getNeighbors());
+    public String toString(boolean colored) {
+        String id = String.format("(%s)%s", this.getType(), this.getId());
+        return (colored ? Printer.formatPurple(id) : id) + (this.getNeighbors().isEmpty() ? "" : " " + this.getNeighbors());
     }
 }

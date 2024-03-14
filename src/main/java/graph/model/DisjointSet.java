@@ -1,14 +1,15 @@
 package graph.model;
 
+import com.google.gson.annotations.SerializedName;
 import misc.Printer;
 
 import java.util.*;
 
 public abstract class DisjointSet<V extends Vertex, P extends Path<V>> implements Comparable<DisjointSet<V, P>> {
 
-    private final Integer id;
-    private final int count;
-    private final Set<P> paths;
+    @SerializedName("ID") private final Integer id;
+    @SerializedName("COUNT") private final int count;
+    @SerializedName("PATHS") private final Set<P> paths;
 
     public DisjointSet(Integer id, int count, Set<P> paths) {
         this.id = id;
@@ -49,10 +50,10 @@ public abstract class DisjointSet<V extends Vertex, P extends Path<V>> implement
         return true;
     }
 
-    @Override
-    public String toString() {
+    public String toString(boolean colored) {
         StringBuilder result = new StringBuilder();
-        result.append(Printer.formatRed(String.format("D%s ", this.getId())));
+        String id = String.format("D%s ", this.getId());
+        result.append(colored ? Printer.formatRed(id) : id);
         result.append("(");
         int p = 1;
         for (P path : this.getPaths()) {

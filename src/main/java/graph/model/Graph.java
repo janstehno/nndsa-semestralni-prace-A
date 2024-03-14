@@ -1,12 +1,14 @@
 package graph.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract class Graph<V extends Vertex> {
-    private final Set<V> vertices;
+    @SerializedName("VERTICES") private final Set<V> vertices;
 
-    private final Map<V, List<V>> edges = new HashMap<>();
+    @SerializedName("EDGES") private final Map<V, List<V>> edges = new HashMap<>();
 
     public Graph(Set<V> vertices) {
         this.vertices = new HashSet<>(vertices);

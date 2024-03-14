@@ -1,8 +1,7 @@
 package example.railway.utils;
 
-import com.google.gson.Gson;
+import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
-import graph.model.Vertex;
 import misc.Printer;
 import example.railway.calculation.DisjointRoutesFinder;
 import example.railway.calculation.RouteFinder;
@@ -11,8 +10,7 @@ import example.railway.model.Railway;
 import example.railway.model.RailwaySwitch;
 import example.railway.model.Route;
 
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.Type;
 import java.util.*;
 
@@ -49,25 +47,22 @@ public class RailwayUtils {
     }
 
     private void printVertices(Railway railway) {
-        List<RailwaySwitch> sorted = new ArrayList<>(railway.getVertices());
-        sorted.sort(Comparator.comparing(Vertex::toString));
-
+        List<RailwaySwitch> sorted = new TreeSet<>(railway.getVertices()).stream().toList();
         System.out.println(Printer.formatGreen(String.format("%d vertices", sorted.size())));
         for (RailwaySwitch node : sorted) {
             if (sorted.indexOf(node) == sorted.size() - 1) {
-                System.out.printf("%s\n", node);
+                System.out.printf("%s\n", node.toString(true));
                 continue;
             }
-            System.out.format("%s, ", node);
+            System.out.format("%s, ", node.toString(true));
         }
     }
 
     private void printRoutes(Set<Route> routes) {
         System.out.println(Printer.formatGreen(String.format("%d routes", routes.size())));
         if (this.style == 1 || this.style == 3) {
-            Set<Route> sorted = new TreeSet<>(routes);
-            for (Route route : sorted) {
-                System.out.println(route);
+            for (Route route : new TreeSet<>(routes)) {
+                System.out.println(route.toString(true));
             }
         }
     }
@@ -79,7 +74,7 @@ public class RailwayUtils {
                 int s = 1;
                 Set<DisjointRoutes> sorted = new TreeSet<>(entry.getValue());
                 for (DisjointRoutes routes : sorted) {
-                    System.out.print(routes);
+                    System.out.print(routes.toString(true));
                     if (s % 4 == 0 || s == sorted.size()) {
                         System.out.print("\n");
                     } else {
@@ -100,7 +95,7 @@ public class RailwayUtils {
         return routes;
     }
 
-    private void findDisjointRoutes(Railway railway, Set<Route> routes) {
+    private Map<Integer, Set<DisjointRoutes>> findDisjointRoutes(Railway railway, Set<Route> routes) {
         DisjointRoutesFinder disjointRoutesFinder = new DisjointRoutesFinder(routes);
         int maxNumberOfDisjointRoutesInGroup = Math.min(railway.getStarts().size(), railway.getEnds().size());
 
@@ -109,14 +104,62 @@ public class RailwayUtils {
 
         int numberOfDisjointRoutes = disjointRoutes.values().stream().mapToInt(Set::size).sum();
         System.out.println(Printer.formatGreen(String.format("%d disjoint groups", numberOfDisjointRoutes)));
+
+        return disjointRoutes;
     }
 
-    public void run(String title, String fileName) {
-        System.out.format("\n%s\n", title);
+    private void saveToTxt(String task, Railway railway, Set<Route> routes, Map<Integer, Set<DisjointRoutes>> disjointRoutes) throws IOException {
+        String folder = "out/" + task + "/";
+        try {
+            File directory = new File(folder);
+            if (!directory.exists()) {
+                if (!directory.mkdirs()) {
+                    throw new IOException();
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(Printer.formatRed("Failed to create directory"));
+        }
+
+        try (PrintWriter verticesWriter = new PrintWriter(folder + "vertices.txt"); PrintWriter routesWriter = new PrintWriter(folder + "routes.txt");
+             PrintWriter disjointRoutesWriter = new PrintWriter(folder + "disjoint-routes.txt")) {
+
+            verticesWriter.println("VERTICES:");
+            for (RailwaySwitch vertex : new TreeSet<>(railway.getVertices())) {
+                verticesWriter.println(vertex.toString(false));
+            }
+            System.out.println("Vertices successfully exported to " + Printer.formatYellow(folder + "vertices.txt"));
+
+            routesWriter.println("ROUTES:");
+            for (Route route : new TreeSet<>(routes)) {
+                routesWriter.println(route.toString(false));
+            }
+            System.out.println("Routes successfully exported to " + Printer.formatYellow(folder + "routes.txt"));
+
+            disjointRoutesWriter.println("DISJOINT ROUTES:");
+            for (Map.Entry<Integer, Set<DisjointRoutes>> entry : disjointRoutes.entrySet()) {
+                disjointRoutesWriter.println();
+                disjointRoutesWriter.println("DISJOINT GROUPS OF " + entry.getKey() + ":");
+                for (DisjointRoutes disjointRoute : new TreeSet<>(entry.getValue())) {
+                    disjointRoutesWriter.println(disjointRoute.toString(false));
+                }
+            }
+            System.out.println("Disjoint routes successfully exported to " + Printer.formatYellow(folder + "disjoint-routes.txt"));
+        }
+    }
+
+    public void run(String task, String fileName) {
+        System.out.format("\n%s\n", task);
         Railway railway = parseRailwayFrom(fileName);
         if (railway != null) {
             printVertices(railway);
-            findDisjointRoutes(railway, findRoutes(railway));
+            Set<Route> routes = findRoutes(railway);
+            Map<Integer, Set<DisjointRoutes>> disjointRoutes = findDisjointRoutes(railway, routes);
+            try {
+                saveToTxt(task.replaceAll(" ", "-").toLowerCase(), railway, routes, disjointRoutes);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
