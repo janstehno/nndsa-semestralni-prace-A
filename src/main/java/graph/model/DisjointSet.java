@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 import misc.Printer;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public abstract class DisjointSet<V extends Vertex, P extends Path<V>> implements Comparable<DisjointSet<V, P>> {
 
@@ -48,6 +49,14 @@ public abstract class DisjointSet<V extends Vertex, P extends Path<V>> implement
             }
         }
         return true;
+    }
+
+    public Map<String, Object> toMap() {
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("ID", this.id);
+        map.put("SUM", this.paths.size());
+        map.put("PATHS", this.paths.stream().map(P::toMap).collect(Collectors.toList()));
+        return map;
     }
 
     public String toString(boolean colored) {

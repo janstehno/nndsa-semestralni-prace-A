@@ -3,8 +3,8 @@ package graph.model;
 import com.google.gson.annotations.SerializedName;
 import misc.Printer;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public abstract class Path<V extends Vertex> implements Comparable<Path<V>> {
 
@@ -43,6 +43,13 @@ public abstract class Path<V extends Vertex> implements Comparable<Path<V>> {
             }
         }
         return true;
+    }
+
+    public Map<String, Object> toMap() {
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("ID", this.id);
+        map.put("VERTICES", this.nodes.stream().map(V::getId).collect(Collectors.toList()));
+        return map;
     }
 
     public String toString(boolean colored) {

@@ -85,13 +85,13 @@ Ensure these dependencies are installed before running the program.
 
 # Output
 
-This project generates output files in text format containing information about the vertices, routes, and disjoint
-routes. The output files are stored in the `out/[name-of-the-task]/`directory and contain human-readable representations
-of the data. Each class has its own text file:
+This project generates output files in text and json format containing information about the vertices, routes, and
+disjoint routes. The output files are stored in the `out/[name-of-the-task]/`directory and contain human-readable
+representations of the data. Each class has its own text or json file:
 
-- `vertices.txt`: Contains information about the vertices in the railway graph.
-- `routes.txt`: Contains information about the routes found in the railway graph.
-- `disjoint-routes.txt`: Contains information about the disjoint routes found in the railway graph.
+- `vertices`: Contains information about the vertices in the railway graph.
+- `routes`: Contains information about the routes found in the railway graph.
+- `disjoint-routes`: Contains information about the disjoint routes found in the railway graph.
 
-The text files are created by serializing the data using the `toString()` method of each class and writing the results
-to the corresponding text files.
+The text files are created by serializing the data using the `toString()` and `toMap()` methods of each class and
+writing the results to the corresponding files.

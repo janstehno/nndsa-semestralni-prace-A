@@ -13,6 +13,7 @@ import example.railway.model.Route;
 import java.io.*;
 import java.lang.reflect.Type;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class RailwayUtils {
 
@@ -109,7 +110,7 @@ public class RailwayUtils {
     }
 
     private void saveToTxt(String task, Railway railway, Set<Route> routes, Map<Integer, Set<DisjointRoutes>> disjointRoutes) throws IOException {
-        String folder = "out/" + task + "/";
+        String folder = "out/" + task + "/txt/";
         try {
             File directory = new File(folder);
             if (!directory.exists()) {
@@ -148,6 +149,41 @@ public class RailwayUtils {
         }
     }
 
+    private void saveToJson(String task, Railway railway, Set<Route> routes, Map<Integer, Set<DisjointRoutes>> disjointRoutes) throws IOException {
+        String folder = "out/" + task + "/json/";
+        try {
+            File directory = new File(folder);
+            if (!directory.exists()) {
+                if (!directory.mkdirs()) {
+                    throw new IOException();
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(Printer.formatRed("Failed to create directory"));
+        }
+
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        try (PrintWriter writer = new PrintWriter(folder + "vertices.json")) {
+            String json = gson.toJson(railway.getVertices());
+            writer.println(json);
+            System.out.println("Vertices successfully exported to " + Printer.formatYellow(folder + "vertices.json"));
+        }
+        try (PrintWriter writer = new PrintWriter(folder + "routes.json")) {
+            String json = gson.toJson(routes.stream().map(Route::toMap).collect(Collectors.toList()));
+            writer.println(json);
+            System.out.println("Routes successfully exported to " + Printer.formatYellow(folder + "routes.json"));
+        }
+        try (PrintWriter writer = new PrintWriter(folder + "disjoint-routes.json")) {
+            String json = gson.toJson(disjointRoutes.entrySet()
+                                                    .stream()
+                                                    .flatMap(entry -> entry.getValue().stream())
+                                                    .map(DisjointRoutes::toMap)
+                                                    .collect(Collectors.toList()));
+            writer.println(json);
+            System.out.println("Disjoint routes successfully exported to " + Printer.formatYellow(folder + "disjoint-routes.json"));
+        }
+    }
+
     public void run(String task, String fileName) {
         System.out.format("\n%s\n", task);
         Railway railway = parseRailwayFrom(fileName);
@@ -157,6 +193,7 @@ public class RailwayUtils {
             Map<Integer, Set<DisjointRoutes>> disjointRoutes = findDisjointRoutes(railway, routes);
             try {
                 saveToTxt(task.replaceAll(" ", "-").toLowerCase(), railway, routes, disjointRoutes);
+                saveToJson(task.replaceAll(" ", "-").toLowerCase(), railway, routes, disjointRoutes);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

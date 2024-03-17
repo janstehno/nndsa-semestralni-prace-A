@@ -6,7 +6,7 @@ import misc.Printer;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Vertex implements Comparable<Vertex>{
+public abstract class Vertex implements Comparable<Vertex> {
     @SerializedName("ID") Integer id;
     @SerializedName("TYPE") VertexType type;
     @SerializedName("NEIGHBORS") List<Integer> neighbors;
